@@ -40,16 +40,19 @@ public class HelloClassLoader extends ClassLoader {
 
         File file = new File("/Users/lzm/Desktop/job/prepare/week1/Hello/Hello.xlass");
         byte[] byteArr = new byte[(int) file.length()];
-
+        FileInputStream is;
         try {
-            new FileInputStream(file).read(byteArr);
+            is = new FileInputStream(file).read(byteArr);
+            byte[] bytes = new byte[(int) file.length()];
+            for (int i = 0; i < bytes.length; i++) {
+                bytes[i] = (byte) (~byteArr[i]);
+            }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        byte[] bytes = new byte[(int) file.length()];
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = (byte) (~byteArr[i]);
+        } finally {
+            if (is != null) {
+                is.close();
+            }
         }
 
         return defineClass(name, bytes, 0, bytes.length);
