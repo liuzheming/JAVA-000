@@ -1,14 +1,22 @@
 package week_01;
 
+import ch.qos.logback.core.util.FileUtil;
+import com.sun.deploy.util.ReflectionUtil;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 
+import org.apache.poi.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Description: 使用类加载器，加载一个class文件，并调用其实例的方法
+ * Description:
  * <p>
  * Created by lzm on 2020/10/20.
  */
@@ -40,21 +48,20 @@ public class HelloClassLoader extends ClassLoader {
 
         File file = new File("/Users/lzm/Desktop/job/prepare/week1/Hello/Hello.xlass");
         byte[] byteArr = new byte[(int) file.length()];
-        FileInputStream is;
+        byte[] bytes = new byte[(int) file.length()];
+        FileInputStream is = null;
         try {
-            is = new FileInputStream(file).read(byteArr);
-            byte[] bytes = new byte[(int) file.length()];
+            is = new FileInputStream(file);
+            is.read(byteArr);
             for (int i = 0; i < bytes.length; i++) {
                 bytes[i] = (byte) (~byteArr[i]);
             }
+            return defineClass(name, bytes, 0, bytes.length);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (is != null) {
-                is.close();
-            }
-        }
 
+        }
         return defineClass(name, bytes, 0, bytes.length);
     }
 
